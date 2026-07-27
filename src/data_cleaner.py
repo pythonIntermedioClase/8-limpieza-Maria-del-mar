@@ -57,8 +57,9 @@ def reemplazar_nulos_texto(
     #            celdas cuyo valor aparezca en `valores`. Devuelve un DataFrame
     #            nuevo (no modifiques el original). Al terminar, la detección de
     #            nulos debe "ver" esas celdas como faltantes.
-    raise NotImplementedError("Implementa reemplazar_nulos_texto()")
-
+    #raise NotImplementedError("Implementa reemplazar_nulos_texto()")
+    df = df.replace(valores,np.nan)
+    return df
 
 def eliminar_duplicados(df):
     """
@@ -84,8 +85,11 @@ def eliminar_duplicados(df):
     """
     # EJERCICIO: produce un DataFrame sin filas repetidas y calcula cuántas
     #            desaparecieron. Retorna la tupla (df_sin_duplicados, eliminadas).
-    raise NotImplementedError("Implementa eliminar_duplicados()")
-
+    #raise NotImplementedError("Implementa eliminar_duplicados()")
+    filas_antes = len(df)
+    df = df.drop_duplicates()
+    eliminadas = filas_antes - len(df)
+    return df, eliminadas
 
 def limpiar_texto(df, columnas):
     """
@@ -113,8 +117,11 @@ def limpiar_texto(df, columnas):
     # EJERCICIO: para cada columna indicada, quita los espacios laterales de
     #            cada celda y pásala a minúsculas. Trabaja sobre una copia y
     #            devuélvela.
-    raise NotImplementedError("Implementa limpiar_texto()")
-
+    #raise NotImplementedError("Implementa limpiar_texto()")
+    df = df.copy()
+    for columna in columnas:
+        df[columna] = df[columna].str.strip().str.lower()
+    return df
 
 def corregir_fechas(df, columna):
     """
@@ -176,8 +183,10 @@ def corregir_numericos(df, columna):
     """
     # EJERCICIO: convierte la columna a número tolerando valores no convertibles
     #            (que deben quedar como nulo). Trabaja sobre una copia.
-    raise NotImplementedError("Implementa corregir_numericos()")
-
+    #raise NotImplementedError("Implementa corregir_numericos()")
+    df = df.copy()
+    df[columna] = pd.to_numeric(df[columna], errors="coerce")
+    return df
 
 def filtrar_negativos(df, columna):
     """
@@ -205,8 +214,11 @@ def filtrar_negativos(df, columna):
     """
     # EJERCICIO: agrega la columna booleana descrita, marcando los negativos.
     #            No elimines filas. Trabaja sobre una copia.
-    raise NotImplementedError("Implementa filtrar_negativos()")
-
+    #raise NotImplementedError("Implementa filtrar_negativos()")
+    df = df.copy()
+    nombre_flag = f"{columna}_es_negativo"
+    df[nombre_flag] = df[columna] < 0
+    return df
 
 if __name__ == "__main__":
     RAIZ = os.path.dirname(os.path.dirname(__file__))

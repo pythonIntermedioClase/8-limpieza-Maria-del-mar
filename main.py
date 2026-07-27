@@ -121,6 +121,34 @@ def main():
     #       depender del estado acumulado de las opciones previas.
     
 
-
 if __name__ == "__main__":
-    main()
+    #main()
+    df = cargar_datos("data/inputs/declaraciones_dirty.csv")
+    print(f"Filas iniciales: {len(df)}")
+    print(f"Nulos reales en saldo_favor antes: {df['saldo_favor'].isnull().sum()}")
+    print(f"'ninguno' en saldo_favor antes: {(df['saldo_favor'] == 'ninguno').sum()}")
+
+    df = reemplazar_nulos_texto(df)
+    print(f"'ninguno' en saldo_favor después: {(df['saldo_favor'] == 'ninguno').sum()}")
+    print(f"Nulos reales en saldo_favor después: {df['saldo_favor'].isnull().sum()}")
+
+    print(f"Filas antes: {len(df)}")
+    df, eliminadas = eliminar_duplicados(df)
+    print(f"Filas después: {len(df)}")
+    print(f"Duplicados eliminados: {eliminadas}")
+
+    df = limpiar_texto(df, columnas=["tipo_persona", "municipio"])
+
+    columnas_numericas = [
+        "total_ingresos", "total_costos", "renta_liquida",
+        "impuesto_cargo", "saldo_favor", "activos_exterior_usd",
+    ]
+    for col in columnas_numericas:
+        df = corregir_numericos(df, col)
+
+    df = filtrar_negativos(df, "activos_exterior_usd")
+
+    print(f"\nFilas finales: {len(df)}")
+    print(f"Tipos resultantes:\n{df.dtypes.to_string()}")
+    print(f"Categorías en tipo_persona: {df['tipo_persona'].unique()}")
+    print(f"Negativos marcados: {df['activos_exterior_usd_es_negativo'].sum()}")
