@@ -13,7 +13,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 import pandas as pd
-from data_loader import (
+from src.data_loader import (
     cargar_datos, inspeccionar_estructura, contar_nulos,
     detectar_nulos_como_texto, contar_duplicados, detectar_negativos,
     generar_reporte_diagnostico,
@@ -61,19 +61,45 @@ def main():
 
     # TODO (Sección 1): declara una variable booleana llamada `ejecutando`
     #       con valor True. El bucle principal usará esa variable como condición.
-
     # TODO (Sección 1): abre el bucle principal con `while ejecutando:`.
     #       Dentro del bucle:
     #       - imprime el menú con print(MENU)
     #       - lee la opción del usuario con input() y guárdala en `opcion`
     #       - agrega un bloque if/elif/else para enrutar cada opción
-
     # TODO (Sección 1): implementa la opción "1" — diagnóstico.
     #       Llama a las funciones de data_loader en secuencia:
     #       cargar_datos → inspeccionar_estructura → contar_nulos →
     #       detectar_nulos_como_texto → contar_duplicados → detectar_negativos →
     #       generar_reporte_diagnostico. Guarda el DataFrame en df_raw y
     #       el reporte en reporte_diagnostico.
+    # TODO (Sección 1): implementa la opción "6" — salida.
+    #       Asigna False a `ejecutando` para terminar el bucle.
+    # TODO (Sección 1): agrega el bloque else para opciones no válidas.
+    #       Imprime un mensaje indicando que la opción no existe.
+    
+    ejecutando = True
+    while ejecutando:
+        print(MENU)
+        opcion = input("Elige una opción (1-6): ").strip()
+        if opcion == "1":
+            df_raw = cargar_datos(RUTA_DATOS)
+            inspeccionar_estructura(df_raw)
+            contar_nulos(df_raw)
+            detectar_nulos_como_texto(df_raw)
+            contar_duplicados(df_raw)
+            detectar_negativos(df_raw, "activos_exterior_usd")
+            print("Negativos de saldo_favor")
+            detectar_negativos(df_raw, "saldo_favor")
+            reporte_diagnostico = generar_reporte_diagnostico(df_raw)
+            print("\n=== Reporte de diagnóstico consolidado ===")
+            print(reporte_diagnostico.to_string(index=False))
+        elif opcion == "2":
+                    print("Pendiente")
+        elif opcion == "6":
+            print("Hasta luego...")
+            ejecutando = False
+        else:
+            print("Opción no válida")
 
     # TODO (Sección 2): implementa la opción "2" — limpieza.
     #       Encadena las funciones de data_cleaner sobre df_raw.
@@ -93,13 +119,7 @@ def main():
     # TODO (Sección 4): implementa la opción "5" — pipeline completo.
     #       Encadena todas las operaciones anteriores en secuencia, sin
     #       depender del estado acumulado de las opciones previas.
-
-    # TODO (Sección 1): implementa la opción "6" — salida.
-    #       Asigna False a `ejecutando` para terminar el bucle.
-
-    # TODO (Sección 1): agrega el bloque else para opciones no válidas.
-    #       Imprime un mensaje indicando que la opción no existe.
-    pass
+    
 
 
 if __name__ == "__main__":
