@@ -94,7 +94,22 @@ def main():
             print("\n=== Reporte de diagnóstico consolidado ===")
             print(reporte_diagnostico.to_string(index=False))
         elif opcion == "2":
-                    print("Pendiente")
+            if df_raw is None:
+                print("opción 1 no se ejecutó aún")
+            else:                
+                df_sin_nan = reemplazar_nulos_texto(df_raw)
+                df_sin_duplic, _ = eliminar_duplicados(df_sin_nan)
+                df_texto_limpio = limpiar_texto(df_sin_duplic, columnas=["tipo_persona", "municipio"])
+                df_fecha_corregida = corregir_fechas(df_texto_limpio, "fecha_presentacion")
+                columnas_numericas = ["total_ingresos", "total_costos", "renta_liquida",
+                    "impuesto_cargo", "saldo_favor", "activos_exterior_usd",
+                ]
+                df_num_corregido = df_fecha_corregida.copy()
+                for col in columnas_numericas:
+                    df_num_corregido = corregir_numericos(df_num_corregido, col)         
+                df_limpio = filtrar_negativos(df_num_corregido, "activos_exterior_usd")            
+                print(f"\nFilas después de limpieza: {len(df_limpio)}") 
+                df_limpio.to_excel("limpio.xlsx")          
         elif opcion == "6":
             print("Hasta luego...")
             ejecutando = False
@@ -122,22 +137,13 @@ def main():
     
 
 if __name__ == "__main__":
-    #main()
+    main()
+    """
     df = cargar_datos("data/inputs/declaraciones_dirty.csv")
-    print(f"Filas iniciales: {len(df)}")
-    print(f"Nulos reales en saldo_favor antes: {df['saldo_favor'].isnull().sum()}")
-    print(f"'ninguno' en saldo_favor antes: {(df['saldo_favor'] == 'ninguno').sum()}")
-
     df = reemplazar_nulos_texto(df)
-    print(f"'ninguno' en saldo_favor después: {(df['saldo_favor'] == 'ninguno').sum()}")
-    print(f"Nulos reales en saldo_favor después: {df['saldo_favor'].isnull().sum()}")
-
-    print(f"Filas antes: {len(df)}")
-    df, eliminadas = eliminar_duplicados(df)
-    print(f"Filas después: {len(df)}")
-    print(f"Duplicados eliminados: {eliminadas}")
-
+    df, _ = eliminar_duplicados(df)
     df = limpiar_texto(df, columnas=["tipo_persona", "municipio"])
+    df = corregir_fechas(df, "fecha_presentacion")
 
     columnas_numericas = [
         "total_ingresos", "total_costos", "renta_liquida",
@@ -152,3 +158,4 @@ if __name__ == "__main__":
     print(f"Tipos resultantes:\n{df.dtypes.to_string()}")
     print(f"Categorías en tipo_persona: {df['tipo_persona'].unique()}")
     print(f"Negativos marcados: {df['activos_exterior_usd_es_negativo'].sum()}")
+    """
