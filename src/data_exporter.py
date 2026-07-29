@@ -75,8 +75,8 @@ def exportar_excel_multihoja(hojas, carpeta, nombre_base):
     # EJERCICIO: asegura la carpeta, arma el nombre con la fecha de hoy y escribe
     #            una hoja por cada entrada del diccionario (sin índice). Retorna
     #            la ruta.
-    raise NotImplementedError("Implementa exportar_excel_multihoja()")
-
+    #raise NotImplementedError("Implementa exportar_excel_multihoja()")
+    
 
 if __name__ == "__main__":
     df_prueba = pd.DataFrame({

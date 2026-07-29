@@ -161,7 +161,6 @@ def corregir_fechas(df, columna):
     df[columna] = pd.to_datetime(df[columna], format="mixed", dayfirst=True, errors="coerce")
     return df
 
-
 def corregir_numericos(df, columna):
     """
     Convierte una columna de texto a número (float), dejando como nulo lo que
